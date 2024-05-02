@@ -1,25 +1,39 @@
 pipeline {
-    agent any // Esto especifica que el pipeline puede ejecutarse en cualquier agente disponible en Jenkins.
+    agent any
 
     stages {
-        stage('Bienvenida') { // Primer stage
-            steps {
-                echo 'Bienvenidos DevOps' // Imprime un mensaje de bienvenida.
-            }
-        }
-        
-        stage('Location') { // Segundo stage
+        stage('Creation') {
             steps {
                 script {
-                    // Imprime el directorio actual donde se está ejecutando el pipeline.
-                    echo "El directorio actual es: ${pwd()}"
+                    // Crear una carpeta y un archivo dentro de ella
+                    sh '''
+                    mkdir -p nueva_carpeta
+                    echo "Contenido del archivo" > nueva_carpeta/archivo.txt
+                    '''
                 }
             }
         }
 
-        stage('OK') { // Tercer stage
+        stage('Copy') {
             steps {
-                echo 'Build finalizado' // Mensaje de finalización del build.
+                script {
+                    // Copiar el archivo en la carpeta /tmp/files
+                    sh '''
+                    mkdir -p /tmp/files
+                    cp nueva_carpeta/archivo.txt /tmp/files/archivo.txt
+                    '''
+                }
+            }
+        }
+
+        stage('Delete') {
+            steps {
+                script {
+                    // Eliminar el archivo original
+                    sh '''
+                    rm -rf nueva_carpeta
+                    '''
+                }
             }
         }
     }
