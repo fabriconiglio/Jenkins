@@ -1,18 +1,13 @@
 pipeline {
-    agent any
-
-    parameters {
-        string(name: 'USER_NAME', defaultValue: 'JUAN PEREZ', description: 'Ingrese su nombre completo')
-        choice(name: 'AWS_PROFILE', choices: ['inkcluster-dev', 'inkcluster-prod', 'inkcluster-test'], description: 'Seleccione la cuenta AWS')
-        choice(name: 'AWS_REGION', choices: ['us-east-1', 'us-east-2', 'us-west-1'], description: 'Seleccione la región AWS')
-    }
+    agent any  // Asegura que el Job puede ejecutarse en cualquier agente disponible
 
     stages {
-        stage('Set Environment') {
+        stage('Check Docker Version') {
             steps {
                 script {
-                    // Imprimir un mensaje de bienvenida con las variables seleccionadas
-                    echo "Bienvenido ${params.USER_NAME}, estás en la cuenta ${params.AWS_PROFILE} en la región ${params.AWS_REGION}."
+                    // Ejecutar el comando para obtener la versión de Docker
+                    def dockerVersion = sh(script: 'docker --version', returnStdout: true).trim()
+                    echo "La versión de Docker instalada es: ${dockerVersion}"
                 }
             }
         }
